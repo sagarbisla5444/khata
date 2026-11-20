@@ -7,7 +7,7 @@ import AdminCustomer from '../components/AdminCustomer.jsx'
 
 const has = (text, q) => text.toLowerCase().includes(q)
 
-export default function AdminAgents({ go }) {
+export default function AdminAgents({ go, pending: requests }) {
   const { data, loading, error, reload } = useAdmin()
   const [q, setQ] = useState('')
   if (!data) {
@@ -35,6 +35,12 @@ export default function AdminAgents({ go }) {
         <button className="btn ghost sm" onClick={reload} disabled={loading}>{loading ? 'Loading…' : 'Refresh'}</button>
       </div>
       {error && <div className="card bad">{error}</div>}
+      <div className="card">
+        <div className="row">
+          <b>{requests ? `${requests} upgrade request${requests > 1 ? 's' : ''} waiting` : 'No upgrade requests waiting'}</b>
+          <button className="btn sm" onClick={() => go('adminRequests')}>{requests ? 'Review' : 'Open'}</button>
+        </div>
+      </div>
       <div className="grid">
         <div className="stat big"><small>Pro agents</small><b>{rows.filter((r) => r.proActive).length}</b></div>
         <div className="stat"><small>Total customers</small><b>{data.customers.length}</b></div>

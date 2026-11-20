@@ -12,7 +12,7 @@ export default function Customers({ data, plan, go }) {
   function add() {
     if (limited) {
       alert(`Regular plan allows ${FREE_LIMIT} customers. Upgrade to Pro for unlimited.`)
-      return go('plan')
+      return go('upgrade')
     }
     go('newCustomer')
   }

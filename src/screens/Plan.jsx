@@ -4,8 +4,9 @@ import { syncNow } from '../sync/sync.js'
 import { useSync } from '../sync/useSync.js'
 import { fmtDate } from '../logic/dates.js'
 import InstallCard from '../components/InstallCard.jsx'
+import { PRO_PRICE_MONTH } from '../config.js'
 
-export default function Plan({ agent }) {
+export default function Plan({ agent, go }) {
   const { plan, reason, raw } = usePlanState()
   const pro = plan === 'pro'
   const s = useSync()
@@ -19,18 +20,21 @@ export default function Plan({ agent }) {
     <>
       <h2>Your plan</h2>
       {pro && <div className="card ok"><b>Pro is active until {fmtDate(raw.expiry)}.</b></div>}
-      {reason === 'expired' && <div className="card bad"><b>Your Pro plan expired on {fmtDate(raw.expiry)}.</b> You are on Regular. Contact us to renew.</div>}
+      {reason === 'expired' && <div className="card bad"><b>Your Pro plan expired on {fmtDate(raw.expiry)}.</b> You are on Regular. Renew below.</div>}
       {reason === 'unverified' && <div className="card bad"><b>Pro is paused.</b> Connect to the internet so the app can verify your plan.</div>}
       <div className={'card plan' + (pro ? '' : ' cur')}>
         <div className="row"><b>Regular</b><b>₹299/mo</b></div>
         <ul><li>Up to 20 customers</li><li>Loans, payments, pending tracking</li><li>Daily collection list</li></ul>
       </div>
       <div className={'card plan' + (pro ? ' cur' : '')}>
-        <div className="row"><b>Pro</b><b>₹699/mo</b></div>
+        <div className="row"><b>Pro</b><b>₹{PRO_PRICE_MONTH}/mo</b></div>
         <ul><li>Unlimited customers</li><li>WhatsApp reminders to customers</li><li>Everything in Regular</li></ul>
         <p className="mut">Coming next: receipts, reports, Excel export, staff logins, penalty rules.</p>
       </div>
-      {!pro && <p className="mut">To upgrade, contact the app owner. Online payment is coming soon.</p>}
+      <div className="actions" style={{ marginBottom: 12 }}>
+        <button className="btn" onClick={() => go('upgrade')}>{pro ? 'Extend Pro' : 'Upgrade to Pro'}</button>
+      </div>
+      {!pro && <p className="mut">Pay by UPI, send the payment reference, and Pro starts once the admin approves it.</p>}
       <InstallCard />
       <h3>Account and backup</h3>
       <div className="card">

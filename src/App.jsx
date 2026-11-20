@@ -14,11 +14,14 @@ import LoanDetail from './screens/LoanDetail.jsx'
 import Plan from './screens/Plan.jsx'
 import AdminAgents from './screens/AdminAgents.jsx'
 import AdminAgent from './screens/AdminAgent.jsx'
+import Upgrade from './screens/Upgrade.jsx'
+import AdminRequests from './screens/AdminRequests.jsx'
+import { usePendingCount } from './data/upgrade.js'
 
 const SCREENS = {
   today: Today, customers: Customers, newCustomer: CustomerForm, customer: CustomerDetail,
-  newLoan: LoanForm, editLoan: LoanForm, loan: LoanDetail, plan: Plan,
-  admin: AdminAgents, adminAgent: AdminAgent,
+  newLoan: LoanForm, editLoan: LoanForm, loan: LoanDetail, plan: Plan, upgrade: Upgrade,
+  admin: AdminAgents, adminAgent: AdminAgent, adminRequests: AdminRequests,
 }
 const TABS = [['today', 'Today'], ['customers', 'Customers'], ['plan', 'Plan']]
 
@@ -29,6 +32,7 @@ export default function App() {
   const ps = usePlanState()
   const plan = ps.plan
   const isAdmin = !!ps.raw?.isAdmin
+  const pending = usePendingCount(isAdmin, route.name) // upgrade requests waiting for the admin
   useEffect(() => { if (agent) startAutoSync() }, [agent])
   // The phone's Back button walks back through screens instead of closing the app.
   useEffect(() => {
@@ -43,7 +47,9 @@ export default function App() {
   const go = (name, id) => { history.pushState({ name, id }, ''); setRoute({ name, id }); window.scrollTo(0, 0) }
   const Screen = SCREENS[route.name]
   const tabs = isAdmin ? [...TABS, ['admin', 'Admin']] : TABS
-  const tab = ['today', 'plan', 'admin'].includes(route.name) ? route.name : route.name === 'adminAgent' ? 'admin' : 'customers'
+  const tab = ['today', 'plan', 'admin'].includes(route.name) ? route.name
+    : ['adminAgent', 'adminRequests'].includes(route.name) ? 'admin'
+    : route.name === 'upgrade' ? 'plan' : 'customers'
 
   return (
     <>
@@ -52,11 +58,11 @@ export default function App() {
         <span className="right"><SyncChip /> <span className="tag">{plan === 'pro' ? 'PRO' : 'REGULAR'}</span></span>
       </header>
       <main>
-        <Screen data={data} plan={plan} go={go} id={route.id} mode={route.name} agent={agent} />
+        <Screen data={data} plan={plan} go={go} id={route.id} mode={route.name} agent={agent} pending={pending} />
       </main>
       <nav>
         {tabs.map(([k, label]) => (
-          <button key={k} className={tab === k ? 'on' : ''} onClick={() => go(k)}>{label}</button>
+          <button key={k} className={tab === k ? 'on' : ''} onClick={() => go(k)}>{k === 'admin' && pending ? `${label} (${pending})` : label}</button>
         ))}
       </nav>
     </>
