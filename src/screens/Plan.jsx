@@ -30,11 +30,11 @@ export default function Plan({ agent, go }) {
         <div className="row"><b>Pro</b><b>₹{PRO_PRICE_MONTH}/mo</b></div>
         <ul><li>Unlimited customers</li><li>WhatsApp reminders to customers</li><li>Everything in Regular</li></ul>
         <p className="mut">Coming next: receipts, reports, Excel export, staff logins, penalty rules.</p>
+        <div className="actions">
+          <button className="btn" style={{ width: '100%' }} onClick={() => go('upgrade')}>{pro ? 'Extend Pro' : `Select Pro · ₹${PRO_PRICE_MONTH}/mo`}</button>
+        </div>
+        {!pro && <p className="mut">You pay by UPI, send the payment reference, and Pro starts once the admin approves it.</p>}
       </div>
-      <div className="actions" style={{ marginBottom: 12 }}>
-        <button className="btn" onClick={() => go('upgrade')}>{pro ? 'Extend Pro' : 'Upgrade to Pro'}</button>
-      </div>
-      {!pro && <p className="mut">Pay by UPI, send the payment reference, and Pro starts once the admin approves it.</p>}
       <InstallCard />
       <h3>Account and backup</h3>
       <div className="card">
