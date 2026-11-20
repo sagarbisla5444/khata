@@ -4,15 +4,5 @@
   "webDir": "dist",
   "android": {
     "allowMixedContent": true
-  },
-  "plugins": {
-    "CapacitorHttp": {
-      "enabled": true
-    }
-  },
-  "server": {
-    "allowNavigation": [
-      "*.supabase.co"
-    ]
   }
 }
